@@ -1,0 +1,48 @@
+
+.normal {
+    font-size: 25px;
+}
+.ui.sidebar {
+    overflow: visible !important;
+}
+
+.pushable>.pusher {
+  
+    z-index: 2;
+}
+.ui.vertical.sidebar.menu {
+    overflow: visible !important;
+}
+.top {
+    /* position:absolute; */
+    left:0; right:0;
+    height: 92px;
+}   
+#bu {
+    float: left;
+    margin: 0 auto;
+}    
+    
+
+.p1 {
+    font-family: Georgia, serif;
+    font-size: 50px;
+    line-height: 35px;
+  }
+.p2 {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    line-height: 35px;
+  }
+
+
+#left {
+    position:absolute; 
+    left:0; top:90px; bottom: 0;
+    width: 290px; 
+    
+}
+.main {
+    position: absolute;
+    left:178px; top:92px; right:0; bottom:0;
+}
