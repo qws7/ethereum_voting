@@ -234,9 +234,7 @@ class New_Voting extends Component {
                         </Button>
                     </Segment>
                 <Form onSubmit={this.submit} warning>
-                    <Header as="h4" attached="top">
-                        Общая информация
-                    </Header>
+
                     <Segment attached>
                         <Form.Input
                             label="Название"
