@@ -1,5 +1,5 @@
 
 module.exports = {
-    registration: "0x2A5930337FFF5FF5C2Ee77E8e412d9B3261c04Bb",
-    BaseofVotings: "0x3f301ae184f72909db50C0f829dCCe21c15823Ef"
+    registration: "0xd4F4d17ff09c6928C49F58a4e5885ad4a5a73BD3",
+    BaseofVotings: "0x78A1C6C939206Bc93eF2D3101b616b1302d7364C"
 }

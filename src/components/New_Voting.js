@@ -5,11 +5,10 @@ import { DateTimeInput } from "semantic-ui-calendar-react";
 import {Form,Header,Message,Button,Segment,Icon} from "semantic-ui-react";
 import paillier from "paillier-js";
 import BaseofVotings from "../build/contracts/BaseofVotings.json";
-import addresses from "../build/contracts/addresses";
 import Web3 from "web3";
 import Loading_Modal from "./Loading_Modal";
 import FileSaver from "file-saver";
-
+import base_addr from "../BaseofVoting_address.json";
 
 
 class New_Voting extends Component {
@@ -97,7 +96,7 @@ class New_Voting extends Component {
     
 
     get_BaseofVotings(web3) {
-        const address = addresses.BaseofVotings;
+        const address =base_addr.data;
         const contract = new web3.eth.Contract(BaseofVotings.abi, address);
         return contract;
     }
@@ -224,12 +223,14 @@ class New_Voting extends Component {
                         />
 
                         <Button
-                            type="button"
-                            icon
-                            labelPosition="left"
+                           
+                            circular
+                            color="green" 
+                            // floated="right"                           
+                            style={{textAlign: "center"}}
                             onClick={this.save_key}
+                            size="big"
                         >
-                            <Icon name="save" />
                             Сохранить
                         </Button>
                     </Segment>
@@ -300,7 +301,7 @@ class New_Voting extends Component {
                     <Segment vertical>
                         <Button
                             type="submit"
-                            fluid
+                            size="big"
                             loading={this.state.modal_state === "loading"}
                             color="green"
                             disabled={!this.state.input_good}

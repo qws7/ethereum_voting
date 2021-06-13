@@ -8,9 +8,10 @@ import '@metamask/legacy-web3';
 import registration from "../build/contracts/registration.json";
 import BaseofVotings from "../build/contracts/BaseofVotings.json";
 import Voting from "../build/contracts/Voting.json";
-import addresses from "../build/contracts/addresses";
 import Future_Voting from "./Future_Voting";
 import Past_Voting from "./Past_Voting";
+import reg_addr from "../Registration_address.json";
+import base_addr from "../BaseofVoting_address.json";
 
 class ViewVoting extends Component {
     state = {
@@ -97,13 +98,13 @@ class ViewVoting extends Component {
     }
 
     get_Registration(web3) {
-        const address = addresses.registration;
+        const address = reg_addr.data;
         const contract = new web3.eth.Contract(registration.abi, address);
         return contract;
     }
 
     get_BaseofVotings(web3) {
-        const address = addresses.BaseofVotings;
+        const address = base_addr.data;
         const contract = new web3.eth.Contract(BaseofVotings.abi, address);
         return contract;
     }

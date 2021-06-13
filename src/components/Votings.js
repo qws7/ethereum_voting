@@ -6,14 +6,14 @@ import Web3 from "web3";
 import '@metamask/legacy-web3';
 import BaseofVotings from "../build/contracts/BaseofVotings.json";
 import Voting from "../build/contracts/Voting.json";
-import addresses from "../build/contracts/addresses";
 import Registration from "./Registration";
 import {createStore} from 'redux';
-//import fs = require("fs");
+
 import {connect} from "react-redux";
-import registration from "../build/contracts/registration.json"
-
-
+import registration from "../build/contracts/registration.json";
+import reg_addr from "../Registration_address.json";
+import base_addr from "../BaseofVoting_address.json";
+const fs = require("fs");
 
 
 
@@ -125,13 +125,15 @@ export class Votings extends Component {
     }
 
     get_Registration(web3) {
-        const address = addresses.registration;
+        const address = reg_addr.data;
+        console.log(address);
         const contract = new web3.eth.Contract(registration.abi, address);
         return contract;
     }
 
     get_BaseofVotings(web3) {
-        const address = addresses.BaseofVotings;
+        const address = base_addr.data;
+        console.log(address);
         const contract = new web3.eth.Contract(BaseofVotings.abi, address);
         return contract;
     }
@@ -215,25 +217,12 @@ export class Votings extends Component {
                             </Message>
                         ) : null}
                         {this.state.user_admin && this.state.view_loader === false ? (
-                            // <ManagerInfoMessage style={{ float: "center"}}/>
                             <Message color="green" Floating >
                                 <Message.Header>Вы администратор голосований.</Message.Header>
-                                <Message.List>
-                                    <Message.Item>
-                                        Чтобы создать голосование нажмите "Создать голосование" в боковой панели.
-                                    </Message.Item>
-                                    <Message.Item>
-                                        Чтобы добавить кандидатов в голосование,посетите главную страницу голосования.
-                                    </Message.Item>
-                                    <Message.Item>
-                                        Чтобы расшифровать и опубликовать результаты голосования перейте в нужное уже прошедшее голосование
-                                        и введите ваш секретный ключ.
-                                    </Message.Item>
-                                </Message.List>
                             </Message>
                         ) : null}
 
-                        {this.state.user_registered === false &&
+                        {this.state.user_registered === false && this.state.user_admin==false && this.state.user_registration==false &&
                         this.state.view_loader === false ? (
                             <Message negative>
                                 <Message.Header>Вы не зарегистрированы,чтобы проголосовать.</Message.Header>

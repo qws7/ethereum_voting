@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import Web3 from "web3";
 import '@metamask/legacy-web3';
-import addresses from "../build/contracts/addresses";
 import registration from "../build/contracts/registration.json";
 import Loading_Modal from "./Loading_Modal";
 import { connect } from 'react-redux';
@@ -19,7 +18,7 @@ import {
     Icon,
     Container
 } from "semantic-ui-react";
-
+import reg_addr from "../Registration_address.json";
 export class Registration extends Component {
     state = {
         view_loader: true,
@@ -107,7 +106,7 @@ export class Registration extends Component {
     }
 
     get_Registration(web3) {
-        const address = addresses.registration;
+        const address = reg_addr.data;
         const contract = new web3.eth.Contract(registration.abi, address);
         return contract;
     }
