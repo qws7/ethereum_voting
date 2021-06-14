@@ -11,14 +11,14 @@ class Future_Voting extends Component {
         title_changed: false,
         description: "",
         description_changed: false,
-        Admin_voting: "",
+        admin_voting: "",
         input_good: false
     };
 
     async componentDidMount() {
         this.setState({
-            Admin_voting: await this.props.contract.methods
-                .Admin()
+            admin_voting: await this.props.contract.methods
+                .admin()
                 .call()
         });
     }
@@ -80,7 +80,7 @@ class Future_Voting extends Component {
                     
                 />
 
-                {this.state.Admin_voting === this.props.user_addresses[0] ? (
+                {this.state.admin_voting === this.props.user_addresses[0] ? (
                     <Form onSubmit={this.submit} warning>
                         <Header as="h4" attached="top">
                             Добавить вариант

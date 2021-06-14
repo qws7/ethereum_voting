@@ -1,7 +1,7 @@
 
 pragma solidity ^0.8.4;
 contract registration {
-    address public Admin;
+    address public admin;
     struct Voter {
         bool registered_voter;
         address addr;
@@ -15,13 +15,13 @@ contract registration {
     mapping(address => Voter) private voters;//хранение информации о избирателе
     //инициализация контракта и установка создателя контракта администратором
     constructor() {
-        Admin = msg.sender;
+        admin = msg.sender;
     }
 
     //функция регистрирующая пользователя или обновляющая информацию о уже зарегистрировавшемся избирателе
     function register_update(address _voter,string memory _pasport,string memory _name,string memory _strAddr,string memory _birth
         ) external {
-        require(msg.sender == Admin, "Only admin");
+        require(msg.sender == admin, "Only admin");
         if (voters[_voter].registered_voter == false) {
             addrVoters.push(_voter);
             voters[_voter].addr = _voter;
@@ -36,7 +36,7 @@ contract registration {
     }
     //Отмена регистрации
     function delete_voter(address _voter) external  {
-        require(msg.sender == Admin, "Only admin");
+        require(msg.sender == admin, "Only admin");
         require(voters[_voter].registered_voter == true, "Not registered");
         voters[_voter].registered_voter = false;
         uint a = voters[_voter].index;

@@ -88,12 +88,12 @@ export class Votings extends Component {
                 .call();
 
 
-            const Admin = await BaseofVotings.methods
-                .Admin()
+            const admin = await BaseofVotings.methods
+                .admin()
                 .call();
-            const user_admin = Admin === user_addresses[0];
+            const user_admin = admin === user_addresses[0];
             const registration_organ_admin = await registration_organ.methods
-                .Admin()
+                .admin()
                 .call();
             const user_registration = registration_organ_admin === user_addresses[0];
 

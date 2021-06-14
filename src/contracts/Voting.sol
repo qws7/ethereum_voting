@@ -18,7 +18,7 @@ contract Voting {
     address public base;
     address public Registration;
     string public publicKey;
-    address public Admin;
+    address public admin;
     string public title;
     string public description;
     uint public time_start;
@@ -30,11 +30,11 @@ contract Voting {
     address[] private addrs_who_voted; // адреса участников,кто проголосовал
 
     //инициализирует контракт требующимися параметрами
-    constructor(address _Admin,address _registration,string memory _publicKey,string memory _title,string memory _description,uint _time_start,uint _endTime
+    constructor(address _admin,address _registration,string memory _publicKey,string memory _title,string memory _description,uint _time_start,uint _endTime
     )  {
         base = msg.sender;
         Registration = _registration;
-        Admin = _Admin;
+        admin = _admin;
         publicKey = _publicKey;
         title = _title;
         description = _description;
@@ -70,7 +70,7 @@ contract Voting {
     }
     //публикация расшифрованных результатов голосования для каждого варианта в контракт
     function publish_results(uint[] memory results) external returns(bool success) {
-        require(msg.sender == Admin, "Only administator");
+        require(msg.sender == admin, "Only administator");
         require(block.timestamp > endTime, "Only after voting");
         published_resultt = results;
         return true;
@@ -85,7 +85,7 @@ contract Voting {
 
     //Эту функцию можно использовать только до начала голосования,чтобы добавить новые варианты в бюллетень
     function add_param(string memory _title, string memory _description) external {
-        require(msg.sender == Admin, "Only administator");
+        require(msg.sender == admin, "Only administator");
         require(block.timestamp < time_start, "Only before voting");
         parametrs.push(Param({ title: _title, description: _description }));
     }

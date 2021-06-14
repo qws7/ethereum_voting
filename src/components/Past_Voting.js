@@ -21,7 +21,7 @@ class Past_Voting extends Component {
         message_error: "",
         message_status:
             "Это займет околы минуты.",
-        Admin_voting: "",
+        admin_voting: "",
         results_p: [],
         privateKey: "",
         privateKey_changed: false,
@@ -30,8 +30,8 @@ class Past_Voting extends Component {
 
     async componentDidMount() {
         this.setState({
-            Admin_voting: await this.props.contract.methods
-            .Admin()
+            admin_voting: await this.props.contract.methods
+            .admin()
             .call(),
 
             results_p: await this.props.contract.methods
@@ -148,7 +148,7 @@ class Past_Voting extends Component {
                     
                 />
 
-                {this.state.Admin_voting === this.props.user_addresses[0] ? (
+                {this.state.admin_voting === this.props.user_addresses[0] ? (
                     <Form onSubmit={this.decrypt_votes} warning>
                         <Header as="h4" attached="top">
                             Получение реальтатов голосования

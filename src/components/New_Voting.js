@@ -14,7 +14,7 @@ import base_addr from "../BaseofVoting_address.json";
 class New_Voting extends Component {
     state = {
         BaseofVotings: undefined,
-        Admin: true,
+        admin: true,
         title: "",
         title_changed: false,
         description: "",
@@ -57,10 +57,10 @@ class New_Voting extends Component {
             const user_addresses = await web3.eth.getAccounts();
 
             if (
-                (await BaseofVotings.methods.Admin().call()) !==
+                (await BaseofVotings.methods.admin().call()) !==
                 user_addresses[0]
             ) {
-                this.setState({ Admin: false });
+                this.setState({ admin: false });
             }
 
             this.setState({
@@ -193,7 +193,7 @@ class New_Voting extends Component {
                     <Redirect to="/Error_Network" />
                 ) : null}
 
-                {this.state.Admin ? null : <Redirect to="/" />}
+                {this.state.admin ? null : <Redirect to="/" />}
 
                 <Loading_Modal
                     modal_open={this.state.modal_open}

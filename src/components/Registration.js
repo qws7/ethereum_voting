@@ -64,7 +64,7 @@ export class Registration extends Component {
             const user_addresses = await web3.eth.getAccounts();
 
             const registration_organ_admin = await registration_organ.methods
-                .Admin()
+                .admin()
                 .call();
             const user_registration = registration_organ_admin === user_addresses[0];
 
