@@ -62,14 +62,14 @@ class ViewVoting extends Component {
                 time_start: await contract.methods.time_start().call(),
                 endTime: await contract.methods.endTime().call(),
                 voter_voted: await contract.methods
-                    .yetVoted(user_addresses[0])
+                    .yet_voted(user_addresses[0])
                     .call(),
-                variants: await contract.methods.getParametrs().call(),
+                variants: await contract.methods.get_parametrs().call(),
                 publicKey: await contract.methods.publicKey().call()
             };
 
             const registered = await registration_organ.methods
-                .isVoter(user_addresses[0])
+                .registered_voter(user_addresses[0])
                 .call();
 
             this.setState({

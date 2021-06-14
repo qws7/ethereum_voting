@@ -41,10 +41,7 @@ class CurrentVoting extends Component {
 
     encrypt_vote() {
         const publicKey_param = JSON.parse(this.props.publicKey);
-        const publicKey = new paillier.PublicKey(
-            BigInt(publicKey_param.n),
-            BigInt(publicKey_param.g)
-        );
+        const publicKey = new paillier.PublicKey(BigInt(publicKey_param.n),BigInt(publicKey_param.g));
         let votes = Array(this.props.variants.length);
         for (let i = 0; i < votes.length; i++) {
             votes[i] = publicKey.encrypt(0).toString();

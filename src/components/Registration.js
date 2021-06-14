@@ -28,7 +28,7 @@ export class Registration extends Component {
         modal_open: false,
         modal_state: "",
         redirect: false,
-        id: "",
+        pasport: "",
         name: "",
         address: "",
         birthdate: "",
@@ -64,18 +64,18 @@ export class Registration extends Component {
             const user_addresses = await web3.eth.getAccounts();
 
             const registration_organ_admin = await registration_organ.methods
-                .manager()
+                .Admin()
                 .call();
             const user_registration = registration_organ_admin === user_addresses[0];
 
-            const voters = await registration_organ.methods.listVoters().call();
+            const voters = await registration_organ.methods.list_of_registered().call();
             let voter_paraments = [];
 
 
             await Promise.all(
                 voters.map(async e => {
                     voter_paraments.push(
-                        await registration_organ.methods.infoVoter(e).call()
+                        await registration_organ.methods.info_of_registered(e).call()
                     );
                 })
             );
@@ -135,7 +135,7 @@ export class Registration extends Component {
         try {
             const address = this.state.voters[i].addr;
             await this.state.registration_organ.methods
-                .deleteVoter(address)
+                .delete_voter(address)
                 .send({ from: this.state.user_addresses[0] });
 
             this.setState({ modal_state: "success" });
@@ -150,12 +150,14 @@ export class Registration extends Component {
 
         try {
             await this.state.registration_organ.methods
-                .registerUpdate(
+                .register_update(
+                    
                     this.state.addr,
+                    this.state.pasport,
                     this.state.name,
                     this.state.strAddr,
-                    this.state.birth,
-                    this.state.id
+                    this.state.birth
+                   
                 )
                 .send({ from: this.state.user_addresses[0] });
 
@@ -228,8 +230,8 @@ export class Registration extends Component {
                                     <Input
                                         fluid
                                         placeholder="Серия и номер паспорта"
-                                        name="id"
-                                        value={this.state.paspor}
+                                        name="pasport"
+                                        value={this.state.pasport}
                                         onChange={this.change}
                                     />
                                 </Table.Cell>
@@ -290,7 +292,7 @@ export class Registration extends Component {
                                 this.state.voters.map((voter, i) => (
                                     <Table.Row key={i}>
                                         <Table.Cell>
-                                            {voter.id}
+                                            {voter.pasport}
                                         </Table.Cell>
                                         <Table.Cell>{voter.name}</Table.Cell>
                                         <Table.Cell>

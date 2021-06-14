@@ -6,7 +6,7 @@ export default function Metamask_Error() {
     return (
         <Segment placeholder color="orange">
             <Header icon>
-                Измените в MetaMask тестовую сеть,RPC которой указано в приложении Ganach.
+                Измените в MetaMask тестовую сеть на Ropsten.
             </Header>
             <Button as={Link}  to={`/`} color="orange">
                 <Button.Content visible>Вернуться на главную страницу</Button.Content>

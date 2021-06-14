@@ -56,7 +56,7 @@ export class Votings extends Component {
             );
 
             const addresses = await BaseofVotings.methods
-                .allCreatedVotings()
+                .all_created_votings()
                 .call();
 
             const user_addresses = await web3.eth.getAccounts();
@@ -73,7 +73,7 @@ export class Votings extends Component {
                         time_start: await contract.methods.time_start().call(),
                         endTime: await contract.methods.endTime().call(),
                         voter_voted: await contract.methods
-                            .yetVoted(user_addresses[0])
+                            .yet_voted(user_addresses[0])
                             .call()
                     };
 
@@ -84,16 +84,16 @@ export class Votings extends Component {
             );
 
             const registered = await registration_organ.methods
-                .isVoter(user_addresses[0])
+                .registered_voter(user_addresses[0])
                 .call();
 
 
-            const manager = await BaseofVotings.methods
-                .manager()
+            const Admin = await BaseofVotings.methods
+                .Admin()
                 .call();
-            const user_admin = manager === user_addresses[0];
+            const user_admin = Admin === user_addresses[0];
             const registration_organ_admin = await registration_organ.methods
-                .manager()
+                .Admin()
                 .call();
             const user_registration = registration_organ_admin === user_addresses[0];
 
@@ -213,12 +213,12 @@ export class Votings extends Component {
                         {this.state.user_registration &&
                         this.state.view_loader === false ? (
                             <Message color="green" info>
-                                <Message.Header>Вы орган регистрации.</Message.Header>
+                                <Message.Header>Вы администратор органа регистрации.</Message.Header>
                             </Message>
                         ) : null}
                         {this.state.user_admin && this.state.view_loader === false ? (
                             <Message color="green" Floating >
-                                <Message.Header>Вы администратор голосований.</Message.Header>
+                                <Message.Header>Вы администратор избирательного участка.</Message.Header>
                             </Message>
                         ) : null}
 

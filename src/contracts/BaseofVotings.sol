@@ -1,35 +1,24 @@
 pragma solidity ^0.8.4;
 
-
 import "./Voting.sol";
 
 contract BaseofVotings {
-    address public manager;
+    address public Admin;
+    address[] public created_votings;
     address public registration2;
-    address[] public createdVotings;
-
-    /// инициализирует контракт и устанавливает создателя контракта администратором
+    /// инициализирует контракт,приняв адрес контракта голосования,который понадобится для создания голосований, и устанавливает создателя контракта администратором
     constructor(address _registration2) {
-        manager = msg.sender;
+        Admin = msg.sender;
         registration2 = _registration2;
     }
-
-    //функции с таким модификатором разрешенно использовать только администраторам
-    modifier onlyadm() {
-        require(msg.sender == manager, "Only admin");
-        _;
-    }
-
     //создает новый контракт голосования
-    function createVoting(string memory _title,string memory _description,uint _time_start,uint _endTime,string memory _encryptionKey)
-        public onlyadm {
-        createdVotings.push(
-            address(new Voting(manager,registration2,_title,_description,_time_start,_endTime,_encryptionKey))
-        );
+    function create_voting(string memory _encryption_key,string memory _title,string memory _description,uint _time_start,uint _endTime)
+        public  {
+        require(msg.sender == Admin, "Only admin");
+        created_votings.push(address(new Voting(Admin,registration2,_encryption_key,_title,_description,_time_start,_endTime)));
     }
-
-    //вернет адреса контрактов все созданных голосований 
-    function allCreatedVotings() public view returns(address[] memory) {
-        return createdVotings;
+    //вернет адреса контрактов всех созданных голосований 
+    function all_created_votings() public view returns(address[] memory) {
+        return created_votings;
     }
 }

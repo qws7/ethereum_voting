@@ -31,11 +31,11 @@ class Past_Voting extends Component {
     async componentDidMount() {
         this.setState({
             Admin_voting: await this.props.contract.methods
-            .manager()
+            .Admin()
             .call(),
 
             results_p: await this.props.contract.methods
-                .getResults()
+                .get_results()
                 .call()
 
         });
@@ -61,11 +61,9 @@ class Past_Voting extends Component {
         });
     };
 
-    submit = async event => {
+    decrypt_votes = async event => {
         event.preventDefault();
-
         this.setState({ modal_open: true, modal_state: "loading" });
-
         try {
             const privateKey_inputed = JSON.parse(this.state.privateKey);
             const privateKey = new paillier.PrivateKey(
@@ -75,68 +73,38 @@ class Past_Voting extends Component {
                 BigInt(privateKey_inputed._q),
                 privateKey_inputed.publicKey
             );
-            const publicKey = new paillier.PublicKey(
-                BigInt(privateKey_inputed.publicKey.n),
-                BigInt(privateKey_inputed.publicKey.g)
-            );
-
-            const voters = await this.props.contract.methods
-                .getListOfVoted()
-                .call();
-            console.log(voters);
-
+            const publicKey = new paillier.PublicKey(BigInt(privateKey_inputed.publicKey.n),BigInt(privateKey_inputed.publicKey.g));
+            const voters = await this.props.contract.methods.get_list_of_voted().call();
             if (voters.length === 0) {
-                console.log("Голосов не найдено.");
+                throw new Error("Голосов не найдено.");
             }
-
             let encrypted_votes = [];
             for (let i = 0; i < voters.length; i++) {
-                encrypted_votes.push(
-                    await this.props.contract.methods
-                        .getEncryptedVots(voters[i])
-                        .call()
-                );
+                encrypted_votes.push(await this.props.contract.methods.get_encrypted_votes(voters[i]).call());
             }
-
-            let results_for_each = [];
+            let results_json = [];
             for (let i = 0; i < encrypted_votes.length; i++) {
-                results_for_each.push(JSON.parse(encrypted_votes[i]));
+                results_json.push(JSON.parse(encrypted_votes[i]));
             }
-
             let end_results = new Array(this.props.variants.length);
-
-            for (let i = 0; i < results_for_each.length; i++) {
-
+            for (let i = 0; i < results_json.length; i++) {
                 for (let j = 0; j < this.props.variants.length; j++) {
                     if (i === 0) {
-                        end_results[j] = BigInt(
-                            results_for_each[i][j]
-                        );
+                        end_results[j] = BigInt(results_json[i][j]);
                     } else {
-                        end_results[j] = publicKey.addition(
-                            end_results[j],
-                            results_for_each[i][j]
-                        );
+                        end_results[j] = publicKey.addition(end_results[j],results_json[i][j]);
                     }
                 }
             }
-
-
-            let result_decrypted = new Array(
-                this.props.variants.length
-            );
-
+            let result_decrypted = new Array(this.props.variants.length);
             for (let i = 0; i < end_results.length; i++) {
-                result_decrypted[i] = privateKey.decrypt(
-                    end_results[i]
-                );
+                result_decrypted[i] = privateKey.decrypt(end_results[i]);
             }
 
             const votes_sum = result_decrypted.reduce(
                 (a, b) => a + b,
                 0
             );
-            console.log(votes_sum);
             if (votes_sum !== voters.length) {
                 this.setState({ modal_state: "Ошибка", message_error: "Количество подсчитанных голосов не совпадает с количеством проголосовавших." });
             }
@@ -151,7 +119,7 @@ class Past_Voting extends Component {
             });
 
             await this.props.contract.methods
-                .publishResults(result_publish)
+                .publish_results(result_publish)
                 .send({ from: this.props.user_addresses[0] });
 
             this.setState({ modal_state: "Операция выполнена удачно" });
@@ -181,7 +149,7 @@ class Past_Voting extends Component {
                 />
 
                 {this.state.Admin_voting === this.props.user_addresses[0] ? (
-                    <Form onSubmit={this.submit} warning>
+                    <Form onSubmit={this.decrypt_votes} warning>
                         <Header as="h4" attached="top">
                             Получение реальтатов голосования
                         </Header>

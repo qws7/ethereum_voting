@@ -27,7 +27,7 @@ class New_Voting extends Component {
         modal_open: false,
         modal_state: "",
         message_error: "",
-        generatedKeyPair: false,
+        generated_key: false,
         publicKey: {},
         privateKey: {}
     };
@@ -57,7 +57,7 @@ class New_Voting extends Component {
             const user_addresses = await web3.eth.getAccounts();
 
             if (
-                (await BaseofVotings.methods.manager().call()) !==
+                (await BaseofVotings.methods.Admin().call()) !==
                 user_addresses[0]
             ) {
                 this.setState({ Admin: false });
@@ -86,10 +86,10 @@ class New_Voting extends Component {
         this.setState({
             publicKey,
             privateKey,
-            generatedKeyPair: true
+            generated_key: true
         
     })
-    console.log(this.state.privateKey);
+
     }
     
     
@@ -154,16 +154,19 @@ class New_Voting extends Component {
 
         try {
             await this.state.BaseofVotings.methods
-                .createVoting(
+                .create_voting(
+                    JSON.stringify(this.state.publicKey),
                     this.state.title,
                     this.state.description,
                     this.to_date(this.state.time_start),
-                    this.to_date(this.state.endTime),
-                    JSON.stringify(this.state.publicKey)
+                    this.to_date(this.state.endTime)
+                    
                 )
                 .send({ from: this.state.user_addresses[0] });
 
             this.setState({ modal_state: "success" });
+            console.log(this.state.publicKey);
+            console.log(JSON.stringify(this.state.publicKey));
         } catch (err) {
             console.error(err);
             this.setState({ modal_state: "error", message_error: err.message });
@@ -210,7 +213,7 @@ class New_Voting extends Component {
                         
                         <Form.TextArea                          
                             value={
-                                this.state.generatedKeyPair
+                                this.state.generated_key
                                     ? JSON.stringify(
                                         (this.state.privateKey),
                                           null,

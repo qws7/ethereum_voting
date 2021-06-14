@@ -4,128 +4,101 @@ pragma solidity ^0.8.4;
 
 import "./registration.sol";
 
-//контракт,с помощью которого избиратели голосуют
 contract Voting {
     struct Param {
-        string title;
-        string description;
+        string title;//имя варианта
+        string description;// описание варианта
     }
 
     struct Vote {
-        uint indofAdr; // индекс адреса участников голосованния
-        string encryptedVote; //гомоморфное зашифрование 0 и 1.1-значит голос
+        uint index_of_adr; // индекс адреса участников голосованния
+        string encrypted_vote; //гомоморфное зашифрование 0 и 1.1-значит голос
     }
 
     address public base;
-    address public manager;
     address public Registration;
+    string public publicKey;
+    address public Admin;
     string public title;
     string public description;
     uint public time_start;
     uint public endTime;
     Param[] public parametrs;
-    string public publicKey;
-    uint[] public publishedResult;
+    uint[] public published_resultt;
 
     mapping(address => Vote) private votes; // хэш-таблица содержащая адреса избирателей и их зашифрованные голоса
-    address[] private addrswhoVoted; // адреса участников,кто проголосовал
+    address[] private addrs_who_voted; // адреса участников,кто проголосовал
 
     //инициализирует контракт требующимися параметрами
-    constructor(address _manager,address _registration,string memory _title,string memory _description,uint _time_start,uint _endTime,string memory _publicKey
+    constructor(address _Admin,address _registration,string memory _publicKey,string memory _title,string memory _description,uint _time_start,uint _endTime
     )  {
         base = msg.sender;
         Registration = _registration;
-        manager = _manager;
+        Admin = _Admin;
+        publicKey = _publicKey;
         title = _title;
         description = _description;
         time_start = _time_start;
         endTime = _endTime;
-        publicKey = _publicKey;
+        
     }
-
- 
-    modifier manager1() {
-        require(msg.sender == manager, "Only administator");
-        _;
+    //узнает оправил ли избиратель свой голос
+    function yet_voted(address _address) public view returns(bool) {
+        if(addrs_who_voted.length == 0) return false;
+        return (addrs_who_voted[votes[_address].index_of_adr] == _address);
     }
-
-    // modifier factory() {
-    //     require(msg.sender == base, "Только базе голосований разрешено использовать эту функцию");
-    //     _;
-    // }
-
-    modifier beforeVoting() {
-        require(block.timestamp < time_start, "Only before voting");
-        _;
+    //проверяет зарегистрирован ли голосующий
+    function yet_registered(address _address) private view returns(bool) {
+        registration r = registration(Registration);
+        return r.registered_voter(_address);
     }
-
-    modifier duringVoting() {
+    //присвоение зашифрованного голоса избирателю,избирать может голосовать несколько раз,отменяя последние голоса
+    function vote(string memory _encrypted_vote) external returns(bool success) {
         require(block.timestamp > time_start && block.timestamp < endTime, "Only during voting");
-        _;
+        require(yet_registered(msg.sender), "Not Registerd");
+        votes[msg.sender].encrypted_vote = _encrypted_vote;
+        if(!yet_voted(msg.sender)) {
+            addrs_who_voted.push(msg.sender);
+            votes[msg.sender].index_of_adr = addrs_who_voted.length - 1;
+        }
+        return true;
     }
-
-    modifier afterVoting() {
-        require(block.timestamp > endTime, "Only after voting");
-        _;
-    }
-
-    //Эту функцию можно использовать только до начала голосования,чтобы добавить новые опции в бюллетень
-    function addParam(string memory _title, string memory _description) external manager1 beforeVoting {
-        parametrs.push(Param({ title: _title, description: _description }));
-    }
-
-    //возвращает все опции,находящиеся в бюллетене
-    function getParametrs() external view returns( Param[] memory) {
-        return parametrs;
-    }
-
-    //возвращет все адресы избирателей,которые проголосовали
-    function getListOfVoted() external view afterVoting returns(address[] memory votersList) {
-        return addrswhoVoted;
-    }
-
     //только после того,как голосование закончено можно получит зашифрованные голоса каждого избирателя
-    function getEncryptedVots(address _address) external view afterVoting returns(string memory encryptedVote) {
-        return votes[_address].encryptedVote;
+    function get_encrypted_votes(address _address) external view returns(string memory encrypted_vote) {
+        require(block.timestamp > endTime, "Only after voting");
+        return votes[_address].encrypted_vote;
     }
-
-    //публикация зашифрованной суммы голосов для каждой опции(кандидата)
-    function publishResults(uint[] memory results) external manager1 afterVoting returns(bool success) {
-        publishedResult = results;
+    //публикация расшифрованных результатов голосования для каждого варианта в контракт
+    function publish_results(uint[] memory results) external returns(bool success) {
+        require(msg.sender == Admin, "Only administator");
+        require(block.timestamp > endTime, "Only after voting");
+        published_resultt = results;
         return true;
     }
 
     //возвращает список окончательных голосов для каждой опции(кандидата)
-    function getResults() external view afterVoting returns(uint[] memory results) {
-        return publishedResult;
+    function get_results() external view returns(uint[] memory results) {
+        require(block.timestamp > endTime, "Only after voting");
+        return published_resultt;
     }
-    //узнает оправил ли избиратель свой голос
-    function yetVoted(address _address) public view returns(bool) {
-        if(addrswhoVoted.length == 0) return false;
-        return (addrswhoVoted[votes[_address].indofAdr] == _address);
-    }
-    //проверяет зарегистрирован ли голосующий
-    function yetRegistered(address _address) private view returns(bool) {
-        registration r = registration(Registration);
-        return r.isVoter(_address);
-    }
-
-    
-    //присвоение зашифрованного голоса избирателю,избирать может голосовать несколько раз,отменяя последние голоса
-    function vote(string memory _encryptedVote) external duringVoting returns(bool success) {
-        require(yetRegistered(msg.sender), "Not Registerd");
-
-        votes[msg.sender].encryptedVote = _encryptedVote;
-
-        if(!yetVoted(msg.sender)) {
-            addrswhoVoted.push(msg.sender);
-            votes[msg.sender].indofAdr = addrswhoVoted.length - 1;
-        }
-
-        return true;
-    }
-
     
 
-    
+    //Эту функцию можно использовать только до начала голосования,чтобы добавить новые варианты в бюллетень
+    function add_param(string memory _title, string memory _description) external {
+        require(msg.sender == Admin, "Only administator");
+        require(block.timestamp < time_start, "Only before voting");
+        parametrs.push(Param({ title: _title, description: _description }));
+    }
+
+    //возвращает все опции,находящиеся в бюллетене
+    function get_parametrs() external view returns( Param[] memory) {
+        return parametrs;
+    }
+
+    //возвращет все адресы избирателей,которые проголосовали
+    function get_list_of_voted() external view  returns(address[] memory voters_list) {
+        require(block.timestamp > endTime, "Only after voting");
+        return addrs_who_voted;
+    }
+
 }

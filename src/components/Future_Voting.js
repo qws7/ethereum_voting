@@ -18,7 +18,7 @@ class Future_Voting extends Component {
     async componentDidMount() {
         this.setState({
             Admin_voting: await this.props.contract.methods
-                .manager()
+                .Admin()
                 .call()
         });
     }
@@ -51,7 +51,7 @@ class Future_Voting extends Component {
 
         try {
             await this.props.contract.methods
-                .addParam(this.state.title, this.state.description)
+                .add_param(this.state.title, this.state.description)
                 .send({ from: this.props.user_addresses[0] });
 
             this.setState({ modal_state: "success" });
