@@ -1,7 +1,7 @@
 {
   "name": "my-project",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@metamask/legacy-web3": "^2.0.0",
     "@reduxjs/toolkit": "^1.5.1",
