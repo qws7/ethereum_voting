@@ -18,21 +18,15 @@ contract registration {
         admin = msg.sender;
     }
 
-    //функция регистрирующая пользователя или обновляющая информацию о уже зарегистрировавшемся избирателе
-    function register_update(address _voter,string memory _pasport,string memory _name,string memory _strAddr,string memory _birth
-        ) external {
+    //функция регистрирующая пользователя
+    function register(address _voter) external {
         require(msg.sender == admin, "Only admin");
         if (voters[_voter].registered_voter == false) {
             addrVoters.push(_voter);
             voters[_voter].addr = _voter;
             voters[_voter].index = (addrVoters).length - 1;
             voters[_voter].registered_voter = true;           
-        }
-        voters[_voter].pasport =_pasport;
-        voters[_voter].name = _name;
-        voters[_voter].strAddr = _strAddr;
-        voters[_voter].birth = _birth;
-        
+        }    
     }
     //Отмена регистрации
     function delete_voter(address _voter) external  {

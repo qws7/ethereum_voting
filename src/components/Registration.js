@@ -211,10 +211,6 @@ export class Registration extends Component {
                     <Table celled compact unstackable>
                         <Table.Header fullWidth>
                             <Table.Row>
-                                <Table.HeaderCell style={{minWidth:150}}>Серия и номер паспорта</Table.HeaderCell>
-                                <Table.HeaderCell style={{minWidth:250}}>Фамилия Имя Отчество</Table.HeaderCell>
-                                <Table.HeaderCell style={{minWidth:250}}>Адрес</Table.HeaderCell>
-                                <Table.HeaderCell style={{minWidth:150}}>Дата рождения</Table.HeaderCell>
                                 <Table.HeaderCell >
                                     Ethereum адрес
                                 </Table.HeaderCell>
@@ -226,43 +222,7 @@ export class Registration extends Component {
 
                         <Table.Body>
                             <Table.Row>
-                                <Table.Cell>
-                                    <Input
-                                        fluid
-                                        placeholder="Серия и номер паспорта"
-                                        name="pasport"
-                                        value={this.state.pasport}
-                                        onChange={this.change}
-                                    />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Input
-                                        fluid
-                                        placeholder="ФИО"
-                                        name="name"
-                                        value={this.state.name}
-                                        onChange={this.change}
-                                    />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Input
-                                        fluid
-                                        placeholder="Адрес"
-                                        name="strAddr"
-                                        value={this.state.strAddr}
-                                        onChange={this.change}
-                                        
-                                    />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Input
-                                        fluid
-                                        placeholder="Дата рождения"
-                                        name="birth"
-                                        value={this.state.birth}
-                                        onChange={this.change}
-                                    />
-                                </Table.Cell>
+                            
                                 <Table.Cell>
                                     <Input
                                         fluid
@@ -291,16 +251,7 @@ export class Registration extends Component {
                             {this.state.voters.length !== 0 ? (
                                 this.state.voters.map((voter, i) => (
                                     <Table.Row key={i}>
-                                        <Table.Cell>
-                                            {voter.pasport}
-                                        </Table.Cell>
-                                        <Table.Cell>{voter.name}</Table.Cell>
-                                        <Table.Cell>
-                                            {voter.strAddr}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {voter.birth}
-                                        </Table.Cell>
+                                
                                         <Table.Cell>
                                             {voter.addr}
                                         </Table.Cell>
